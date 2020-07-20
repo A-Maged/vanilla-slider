@@ -16,15 +16,26 @@ const DIRECTIONS = {
 	PREV: "prev",
 };
 
-class Slider {
-	constructor($el) {
-		this.$el = $el;
-		this.direction = DIRECTIONS.NEXT;
+export function initAllSlider(config) {
+	let sliders = [];
+
+	$(`.${CLASSNAMES.SLIDER}`).each((_, el) => {
+		sliders.push(new Slider($(el, config)));
+	});
+
+	return sliders;
+}
+
+export default class Slider {
+	constructor(el, config = {}) {
+		this.$el = $(el);
 		this.isSliding = false;
 		this.interval = null;
 		this.config = {
 			interval: 1000,
 			timeout: 600,
+			direction: DIRECTIONS.NEXT,
+			...config,
 		};
 
 		/* Bind events */
@@ -68,7 +79,7 @@ class Slider {
 		this.interval = setInterval(
 			/* TODO: run only if slider is visible */
 
-			self.slide.bind(self, self.direction),
+			self.slide.bind(self, self.config.direction),
 			self.config.interval
 		);
 	}
@@ -92,7 +103,7 @@ class Slider {
 		}
 
 		/* Allow sliding after timeout */
-		sleep(self.config.timeout).then(() => {
+		_sleep(self.config.timeout).then(() => {
 			self.isSliding = false;
 		});
 	}
@@ -156,16 +167,6 @@ class Slider {
 	}
 }
 
-export default function init() {
-	let sliders = [];
-
-	$(`.${CLASSNAMES.SLIDER}`).each((_, el) => {
-		sliders.push(new Slider($(el)));
-	});
-
-	return sliders;
-}
-
-function sleep(ms) {
+function _sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }

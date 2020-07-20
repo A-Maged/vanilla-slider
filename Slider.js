@@ -16,9 +16,9 @@ const DIRECTIONS = {
 	PREV: "prev",
 };
 
-export default class Slider {
-	constructor() {
-		this.$el = $(".slider");
+class Slider {
+	constructor($el) {
+		this.$el = $el;
 		this.direction = DIRECTIONS.NEXT;
 		this.isSliding = false;
 		this.interval = null;
@@ -38,20 +38,20 @@ export default class Slider {
 		let self = this;
 
 		/* Next on click */
-		$(`.${CLASSNAMES.RIGHT_CONTROL}`).on("click", (e) =>
-			self.slide(DIRECTIONS.NEXT)
-		);
+		this.$el
+			.find(`.${CLASSNAMES.RIGHT_CONTROL}`)
+			.on("click", (e) => self.slide(DIRECTIONS.NEXT));
 
 		/* Prev on click */
-		$(`.${CLASSNAMES.LEFT_CONTROL}`).on("click", (e) =>
-			self.slide(DIRECTIONS.PREV)
-		);
+		this.$el
+			.find(`.${CLASSNAMES.LEFT_CONTROL}`)
+			.on("click", (e) => self.slide(DIRECTIONS.PREV));
 
 		/* Pause on enter */
-		$(`.${CLASSNAMES.SLIDER}`).on("mouseenter", self.pause.bind(self));
+		this.$el.on("mouseenter", self.pause.bind(self));
 
 		/* Cycle on leave */
-		$(`.${CLASSNAMES.SLIDER}`).on("mouseleave", self.cycle.bind(self));
+		this.$el.on("mouseleave", self.cycle.bind(self));
 	}
 
 	pause() {
@@ -66,6 +66,8 @@ export default class Slider {
 		}
 
 		this.interval = setInterval(
+			/* TODO: run only if slider is visible */
+
 			self.slide.bind(self, self.direction),
 			self.config.interval
 		);
@@ -77,12 +79,17 @@ export default class Slider {
 			return;
 		}
 
+		let self = this;
 		this.isSliding = true;
-		this.direction = direction;
 
-		console.log(this.direction);
-
-		this.next() || this.prev();
+		switch (direction) {
+			case DIRECTIONS.NEXT:
+				this.next();
+				break;
+			case DIRECTIONS.PREV:
+				this.prev();
+				break;
+		}
 
 		/* Allow sliding after timeout */
 		sleep(self.config.timeout).then(() => {
@@ -91,8 +98,6 @@ export default class Slider {
 	}
 
 	next() {
-		if (this.direction !== DIRECTIONS.NEXT) return false;
-
 		let self = this;
 		let $el = this.$el;
 
@@ -114,8 +119,6 @@ export default class Slider {
 	}
 
 	prev() {
-		if (this.direction !== DIRECTIONS.PREV) return false;
-
 		let self = this;
 		let $el = this.$el;
 
@@ -151,6 +154,16 @@ export default class Slider {
 
 		return $next;
 	}
+}
+
+export default function init() {
+	let sliders = [];
+
+	$(`.${CLASSNAMES.SLIDER}`).each((_, el) => {
+		sliders.push(new Slider($(el)));
+	});
+
+	return sliders;
 }
 
 function sleep(ms) {

@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-const ClassName = {
+const CLASSNAMES = {
 	SLIDER: "slider",
 	SLIDE: "slide",
 	ACTIVE: "slide--active",
@@ -38,20 +38,20 @@ export default class Slider {
 		let self = this;
 
 		/* Next on click */
-		$(`.${ClassName.RIGHT_CONTROL}`).on("click", (e) =>
+		$(`.${CLASSNAMES.RIGHT_CONTROL}`).on("click", (e) =>
 			self.slide(DIRECTIONS.NEXT)
 		);
 
 		/* Prev on click */
-		$(`.${ClassName.LEFT_CONTROL}`).on("click", (e) =>
+		$(`.${CLASSNAMES.LEFT_CONTROL}`).on("click", (e) =>
 			self.slide(DIRECTIONS.PREV)
 		);
 
 		/* Pause on enter */
-		$(`.${ClassName.SLIDER}`).on("mouseenter", self.pause.bind(self));
+		$(`.${CLASSNAMES.SLIDER}`).on("mouseenter", self.pause.bind(self));
 
 		/* Cycle on leave */
-		$(`.${ClassName.SLIDER}`).on("mouseleave", self.cycle.bind(self));
+		$(`.${CLASSNAMES.SLIDER}`).on("mouseleave", self.cycle.bind(self));
 	}
 
 	pause() {
@@ -96,21 +96,21 @@ export default class Slider {
 		let self = this;
 		let $el = this.$el;
 
-		let $active = $el.find(`.${ClassName.ACTIVE}`);
+		let $active = $el.find(`.${CLASSNAMES.ACTIVE}`);
 
 		/* remove all classes */
-		$el.find(`.${ClassName.PREV}`).removeClass(ClassName.PREV);
-		$el.find(`.${ClassName.NEXT}`).removeClass(ClassName.NEXT);
-		$el.find(`.${ClassName.ACTIVE}`).removeClass(ClassName.ACTIVE);
+		$el.find(`.${CLASSNAMES.PREV}`).removeClass(CLASSNAMES.PREV);
+		$el.find(`.${CLASSNAMES.NEXT}`).removeClass(CLASSNAMES.NEXT);
+		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
 		/* next -> active */
-		$active = this._getNextSlide($active).addClass(ClassName.ACTIVE);
+		$active = this._getNextSlide($active).addClass(CLASSNAMES.ACTIVE);
 
 		/* set prev */
-		this._getPrevSlide($active).addClass(ClassName.PREV);
+		this._getPrevSlide($active).addClass(CLASSNAMES.PREV);
 
 		/* set next */
-		this._getNextSlide($active).addClass(ClassName.NEXT);
+		this._getNextSlide($active).addClass(CLASSNAMES.NEXT);
 	}
 
 	prev() {
@@ -119,27 +119,27 @@ export default class Slider {
 		let self = this;
 		let $el = this.$el;
 
-		let $active = $el.find(`.${ClassName.ACTIVE}`);
+		let $active = $el.find(`.${CLASSNAMES.ACTIVE}`);
 
 		/* remove all classes */
-		$el.find(`.${ClassName.PREV}`).removeClass(ClassName.PREV);
-		$el.find(`.${ClassName.NEXT}`).removeClass(ClassName.NEXT);
-		$el.find(`.${ClassName.ACTIVE}`).removeClass(ClassName.ACTIVE);
+		$el.find(`.${CLASSNAMES.PREV}`).removeClass(CLASSNAMES.PREV);
+		$el.find(`.${CLASSNAMES.NEXT}`).removeClass(CLASSNAMES.NEXT);
+		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
 		/* prev -> active */
-		$active = this._getPrevSlide($active).addClass(ClassName.ACTIVE);
+		$active = this._getPrevSlide($active).addClass(CLASSNAMES.ACTIVE);
 
 		/* set prev */
-		this._getPrevSlide($active).addClass(ClassName.PREV);
+		this._getPrevSlide($active).addClass(CLASSNAMES.PREV);
 
 		/* set next */
-		this._getNextSlide($active).addClass(ClassName.NEXT);
+		this._getNextSlide($active).addClass(CLASSNAMES.NEXT);
 	}
 
 	_getPrevSlide($active) {
 		let $prev = $active.prev().length
 			? $active.prev()
-			: this.$el.find(`.${ClassName.SLIDE}`).last();
+			: this.$el.find(`.${CLASSNAMES.SLIDE}`).last();
 
 		return $prev;
 	}
@@ -147,7 +147,7 @@ export default class Slider {
 	_getNextSlide($active) {
 		let $next = $active.next().length
 			? $active.next()
-			: this.$el.find(`.${ClassName.SLIDE}`).first();
+			: this.$el.find(`.${CLASSNAMES.SLIDE}`).first();
 
 		return $next;
 	}

@@ -7,5 +7,6 @@ $ yarn watch  # visit http://localhost:1234
 
 ## TODO
 
-- [ ] fix the first prev is not animated
-- [ ] run cycle() only if slider is visible
+- [ ] Fix the first prev is not animated
+- [ ] Run cycle() only if slider is visible
+- [ ] Style controls

@@ -11,13 +11,19 @@ const ClassName = {
 	RIGHT_CONTROL: "slider-control--right",
 };
 
+const DIRECTIONS = {
+	NEXT: "next",
+	PREV: "prev",
+};
+
 export default class Slider {
 	constructor() {
 		this.$el = $(".slider");
+		this.direction = DIRECTIONS.NEXT;
 		this.isSliding = false;
 		this.interval = null;
 		this.config = {
-			interval: 1500,
+			interval: 1000,
 			timeout: 600,
 		};
 
@@ -32,9 +38,13 @@ export default class Slider {
 		let self = this;
 
 		/* Next on click */
-		$(`.${ClassName.RIGHT_CONTROL}`).on("click", (e) => self.next(e));
+		$(`.${ClassName.RIGHT_CONTROL}`).on("click", (e) =>
+			self.slide(DIRECTIONS.NEXT)
+		);
 
-		$(`.${ClassName.LEFT_CONTROL}`).on("click", (e) => self.prev(e));
+		$(`.${ClassName.LEFT_CONTROL}`).on("click", (e) =>
+			self.slide(DIRECTIONS.PREV)
+		);
 
 		/* Pause on hover */
 		$(`.${ClassName.SLIDER}`).on("mouseenter", self.pause.bind(self));
@@ -54,21 +64,36 @@ export default class Slider {
 			clearInterval(this.interval);
 		}
 
-		this.interval = setInterval(self.next.bind(self), self.config.interval);
+		this.interval = setInterval(
+			self.slide.bind(self, self.direction),
+			self.config.interval
+		);
 	}
 
-	slide() {}
-
-	next(event) {
-		let self = this;
-		let $el = this.$el;
-
-		/* Disable "next" if isSliding */
+	slide(direction) {
+		/* Disable sliding if isSliding */
 		if (this.isSliding) {
 			return;
 		}
 
 		this.isSliding = true;
+		this.direction = direction;
+
+		console.log(this.direction);
+
+		this.next() || this.prev();
+
+		/* Allow "sliding" after timeout */
+		sleep(self.config.timeout).then(() => {
+			self.isSliding = false;
+		});
+	}
+
+	next() {
+		if (this.direction !== DIRECTIONS.NEXT) return false;
+
+		let self = this;
+		let $el = this.$el;
 
 		let $active = $el.find(`.${ClassName.ACTIVE}`);
 
@@ -85,23 +110,13 @@ export default class Slider {
 
 		/* set next */
 		this.getNextSlide($active).addClass(ClassName.NEXT);
-
-		/* Allow "next" after timeout */
-		sleep(self.config.timeout).then(() => {
-			self.isSliding = false;
-		});
 	}
 
-	prev(e) {
+	prev() {
+		if (this.direction !== DIRECTIONS.PREV) return false;
+
 		let self = this;
 		let $el = this.$el;
-
-		/* Disable "prev" if isSliding */
-		if (this.isSliding) {
-			return;
-		}
-
-		this.isSliding = true;
 
 		let $active = $el.find(`.${ClassName.ACTIVE}`);
 
@@ -118,11 +133,6 @@ export default class Slider {
 
 		/* set next */
 		this.getNextSlide($active).addClass(ClassName.NEXT);
-
-		/* Allow "next" after timeout */
-		sleep(self.config.timeout).then(() => {
-			self.isSliding = false;
-		});
 	}
 
 	getPrevSlide($active) {

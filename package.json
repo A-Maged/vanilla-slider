@@ -4,12 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-	  "watch": "parcel index.html"
+    "watch": "parcel index.html"
   },
   "dependencies": {
     "jquery": "^3.5.1"
   },
   "devDependencies": {
+    "parcel": "^1.12.4",
     "sass": "^1.26.10"
   }
 }

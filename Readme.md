@@ -1,6 +1,6 @@
 ## Vanilla Slider
 
-```
-yarn install
-yarn watch // visit http://localhost:1234 
+```bash
+$ yarn install
+$ yarn watch // visit http://localhost:1234 
 ```

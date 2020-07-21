@@ -39,6 +39,8 @@ export default class Slider {
 			...config,
 		};
 
+		this._setupClasses();
+
 		/* Bind events */
 		this._bindEventListeners();
 
@@ -114,6 +116,7 @@ export default class Slider {
 	next() {
 		let $el = this.$el;
 
+		/* Must get before removing all classes */
 		this.$activeEl = this._getActiveSlide();
 
 		/* remove all classes */
@@ -121,31 +124,34 @@ export default class Slider {
 		$el.find(`.${CLASSNAMES.NEXT}`).removeClass(CLASSNAMES.NEXT);
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
-		/* next -> active */
+		/* 1. set active (next -> active)*/
 		this.$activeEl = this._getNextSlide().addClass(CLASSNAMES.ACTIVE);
 
-		/* set prev */
+		/* 2. set new prev */
 		this._getPrevSlide().addClass(CLASSNAMES.PREV);
 
-		/* set next */
+		/* 3. set new next */
 		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 
 	prev() {
 		let $el = this.$el;
 
+		/* Must get before removing all classes */
+		this.$activeEl = this._getActiveSlide();
+
 		/* remove all classes */
 		$el.find(`.${CLASSNAMES.PREV}`).removeClass(CLASSNAMES.PREV);
 		$el.find(`.${CLASSNAMES.NEXT}`).removeClass(CLASSNAMES.NEXT);
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
-		/* prev -> active */
+		/* 1. set active (prev -> active)*/
 		this.$activeEl = this._getPrevSlide().addClass(CLASSNAMES.ACTIVE);
 
-		/* set prev */
+		/* set new prev */
 		this._getPrevSlide().addClass(CLASSNAMES.PREV);
 
-		/* set next */
+		/* set new next */
 		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 
@@ -172,11 +178,24 @@ export default class Slider {
 	}
 
 	_getNextSlide($active = this._getActiveSlide()) {
-		let $next = $active.next().length
+		let $next = $active.next(`.${CLASSNAMES.SLIDE}`).length
 			? $active.next()
 			: this.$el.find(`.${CLASSNAMES.SLIDE}`).first();
 
 		return $next;
+	}
+
+	_setupClasses() {
+		this.$activeEl = this._getActiveSlide();
+
+		/* set active */
+		this.$activeEl.addClass(CLASSNAMES.ACTIVE);
+
+		/* set prev */
+		this._getPrevSlide().addClass(CLASSNAMES.PREV);
+
+		/* set next */
+		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 }
 

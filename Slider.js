@@ -29,6 +29,7 @@ export function initAllSlider(config) {
 export default class Slider {
 	constructor(el, config = {}) {
 		this.$el = $(el);
+		this.$activeEl = null;
 		this.isSliding = false;
 		this.interval = null;
 		this.config = {
@@ -109,10 +110,9 @@ export default class Slider {
 	}
 
 	next() {
-		let self = this;
 		let $el = this.$el;
 
-		let $active = $el.find(`.${CLASSNAMES.ACTIVE}`);
+		this.$activeEl = this._getActiveSlide();
 
 		/* remove all classes */
 		$el.find(`.${CLASSNAMES.PREV}`).removeClass(CLASSNAMES.PREV);
@@ -120,20 +120,19 @@ export default class Slider {
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
 		/* next -> active */
-		$active = this._getNextSlide($active).addClass(CLASSNAMES.ACTIVE);
+		this.$activeEl = this._getNextSlide().addClass(
+			CLASSNAMES.ACTIVE
+		);
 
 		/* set prev */
-		this._getPrevSlide($active).addClass(CLASSNAMES.PREV);
+		this._getPrevSlide().addClass(CLASSNAMES.PREV);
 
 		/* set next */
-		this._getNextSlide($active).addClass(CLASSNAMES.NEXT);
+		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 
 	prev() {
-		let self = this;
 		let $el = this.$el;
-
-		let $active = $el.find(`.${CLASSNAMES.ACTIVE}`);
 
 		/* remove all classes */
 		$el.find(`.${CLASSNAMES.PREV}`).removeClass(CLASSNAMES.PREV);
@@ -141,16 +140,32 @@ export default class Slider {
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
 		/* prev -> active */
-		$active = this._getPrevSlide($active).addClass(CLASSNAMES.ACTIVE);
+		this._getPrevSlide().addClass(CLASSNAMES.ACTIVE);
 
 		/* set prev */
-		this._getPrevSlide($active).addClass(CLASSNAMES.PREV);
+		this._getPrevSlide().addClass(CLASSNAMES.PREV);
 
 		/* set next */
-		this._getNextSlide($active).addClass(CLASSNAMES.NEXT);
+		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 
-	_getPrevSlide($active) {
+	_getActiveSlide() {
+		/* find by active-class */
+		this.$activeEl = this.$activeEl?.length
+			? this.$activeEl
+			: this.$el.find(`.${CLASSNAMES.ACTIVE}`);
+
+		/* find first slide */
+		this.$activeEl = this.$activeEl?.length
+			? this.$activeEl
+			: this.$el.find(`.${CLASSNAMES.SLIDE}`).first();
+
+		return this.$activeEl;
+	}
+
+	_getPrevSlide() {
+		let $active = this._getActiveSlide();
+
 		let $prev = $active.prev().length
 			? $active.prev()
 			: this.$el.find(`.${CLASSNAMES.SLIDE}`).last();
@@ -158,7 +173,9 @@ export default class Slider {
 		return $prev;
 	}
 
-	_getNextSlide($active) {
+	_getNextSlide() {
+		let $active = this._getActiveSlide();
+
 		let $next = $active.next().length
 			? $active.next()
 			: this.$el.find(`.${CLASSNAMES.SLIDE}`).first();

@@ -101,6 +101,8 @@ export default class Slider {
 			case DIRECTIONS.PREV:
 				this.prev();
 				break;
+			default:
+				console.error("Wrong slide direction");
 		}
 
 		/* Allow sliding after timeout */
@@ -120,9 +122,7 @@ export default class Slider {
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
 		/* next -> active */
-		this.$activeEl = this._getNextSlide().addClass(
-			CLASSNAMES.ACTIVE
-		);
+		this.$activeEl = this._getNextSlide().addClass(CLASSNAMES.ACTIVE);
 
 		/* set prev */
 		this._getPrevSlide().addClass(CLASSNAMES.PREV);
@@ -140,7 +140,7 @@ export default class Slider {
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
 		/* prev -> active */
-		this._getPrevSlide().addClass(CLASSNAMES.ACTIVE);
+		this.$activeEl = this._getPrevSlide().addClass(CLASSNAMES.ACTIVE);
 
 		/* set prev */
 		this._getPrevSlide().addClass(CLASSNAMES.PREV);
@@ -163,9 +163,7 @@ export default class Slider {
 		return this.$activeEl;
 	}
 
-	_getPrevSlide() {
-		let $active = this._getActiveSlide();
-
+	_getPrevSlide($active = this._getActiveSlide()) {
 		let $prev = $active.prev().length
 			? $active.prev()
 			: this.$el.find(`.${CLASSNAMES.SLIDE}`).last();
@@ -173,9 +171,7 @@ export default class Slider {
 		return $prev;
 	}
 
-	_getNextSlide() {
-		let $active = this._getActiveSlide();
-
+	_getNextSlide($active = this._getActiveSlide()) {
 		let $next = $active.next().length
 			? $active.next()
 			: this.$el.find(`.${CLASSNAMES.SLIDE}`).first();

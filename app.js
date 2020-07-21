@@ -1,5 +1,5 @@
 import $ from "jquery";
-import Slider, { initAllSlider } from "./Slider";
+import Slider, { initAllSliders } from "./Slider";
 
 
 
@@ -8,4 +8,4 @@ import Slider, { initAllSlider } from "./Slider";
 // 	direction: 'prev'
 // });
 
-window.app = initAllSlider();
+window.app = initAllSliders();

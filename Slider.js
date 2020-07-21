@@ -16,7 +16,7 @@ const DIRECTIONS = {
 	PREV: "prev",
 };
 
-export function initAllSlider(config) {
+export function initAllSliders(config) {
 	let sliders = [];
 
 	$(`.${CLASSNAMES.SLIDER}`).each((_, el) => {
@@ -54,12 +54,12 @@ export default class Slider {
 		/* Next on click */
 		this.$el
 			.find(`.${CLASSNAMES.RIGHT_CONTROL}`)
-			.on("click", (e) => self.slide(DIRECTIONS.NEXT));
+			.on("click", self.slide.bind(self, DIRECTIONS.NEXT));
 
 		/* Prev on click */
 		this.$el
 			.find(`.${CLASSNAMES.LEFT_CONTROL}`)
-			.on("click", (e) => self.slide(DIRECTIONS.PREV));
+			.on("click", self.slide.bind(self, DIRECTIONS.PREV));
 
 		/* Pause on enter */
 		this.$el.on("mouseenter", self.pause.bind(self));
@@ -116,7 +116,7 @@ export default class Slider {
 	next() {
 		let $el = this.$el;
 
-		/* Must get before removing all classes */
+		/* Must get the active-element before removing all classes */
 		this.$activeEl = this._getActiveSlide();
 
 		/* remove all classes */
@@ -124,20 +124,20 @@ export default class Slider {
 		$el.find(`.${CLASSNAMES.NEXT}`).removeClass(CLASSNAMES.NEXT);
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
-		/* 1. set active (next -> active)*/
+		/* 1. set the new active-element (next -> active)*/
 		this.$activeEl = this._getNextSlide().addClass(CLASSNAMES.ACTIVE);
 
-		/* 2. set new prev */
+		/* 2. set the new prev-element */
 		this._getPrevSlide().addClass(CLASSNAMES.PREV);
 
-		/* 3. set new next */
+		/* 3. set the new next-element */
 		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 
 	prev() {
 		let $el = this.$el;
 
-		/* Must get before removing all classes */
+		/* Must get the active-element before removing all classes */
 		this.$activeEl = this._getActiveSlide();
 
 		/* remove all classes */
@@ -145,13 +145,13 @@ export default class Slider {
 		$el.find(`.${CLASSNAMES.NEXT}`).removeClass(CLASSNAMES.NEXT);
 		$el.find(`.${CLASSNAMES.ACTIVE}`).removeClass(CLASSNAMES.ACTIVE);
 
-		/* 1. set active (prev -> active)*/
+		/* 1. set the new active-element (prev -> active)*/
 		this.$activeEl = this._getPrevSlide().addClass(CLASSNAMES.ACTIVE);
 
-		/* set new prev */
+		/* 2. set the new prev-element */
 		this._getPrevSlide().addClass(CLASSNAMES.PREV);
 
-		/* set new next */
+		/* 3. set the new next-element */
 		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 
@@ -170,16 +170,18 @@ export default class Slider {
 	}
 
 	_getPrevSlide($active = this._getActiveSlide()) {
-		let $prev = $active.prev().length
-			? $active.prev()
-			: this.$el.find(`.${CLASSNAMES.SLIDE}`).last();
+		let $prev = $active.prev(`.${CLASSNAMES.SLIDE}`);
+
+		$prev = $prev.length ? $prev : this.$el.find(`.${CLASSNAMES.SLIDE}`).last();
 
 		return $prev;
 	}
 
 	_getNextSlide($active = this._getActiveSlide()) {
-		let $next = $active.next(`.${CLASSNAMES.SLIDE}`).length
-			? $active.next()
+		let $next = $active.next(`.${CLASSNAMES.SLIDE}`);
+
+		$next = $next.length
+			? $next
 			: this.$el.find(`.${CLASSNAMES.SLIDE}`).first();
 
 		return $next;
@@ -188,13 +190,13 @@ export default class Slider {
 	_setupClasses() {
 		this.$activeEl = this._getActiveSlide();
 
-		/* set active */
+		/* set active class */
 		this.$activeEl.addClass(CLASSNAMES.ACTIVE);
 
-		/* set prev */
+		/* set prev class */
 		this._getPrevSlide().addClass(CLASSNAMES.PREV);
 
-		/* set next */
+		/* set next class */
 		this._getNextSlide().addClass(CLASSNAMES.NEXT);
 	}
 }

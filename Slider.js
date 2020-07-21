@@ -172,7 +172,9 @@ export default class Slider {
 	_getPrevSlide($active = this._getActiveSlide()) {
 		let $prev = $active.prev(`.${CLASSNAMES.SLIDE}`);
 
-		$prev = $prev.length ? $prev : this.$el.find(`.${CLASSNAMES.SLIDE}`).last();
+		$prev = $prev.length
+			? $prev
+			: this.$el.find(`.${CLASSNAMES.SLIDE}`).last();
 
 		return $prev;
 	}

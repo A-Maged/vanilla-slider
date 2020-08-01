@@ -1,0 +1,5 @@
+image: "alpine"
+
+firstjob:
+    script:
+        - echo "hello cm"
